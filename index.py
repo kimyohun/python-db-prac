@@ -1,13 +1,21 @@
 import pandas as pd
 from sqlalchemy import create_engine
+import plotly.express as px
 
 # hugginf face에서 csv 가져옴. fsspec 설치 필요
-df = pd.read_csv("hf://datasets/Ammok/apple_stock_price_from_1980-2021/AAPL.csv")
+# df = pd.read_csv("hf://datasets/Ammok/apple_stock_price_from_1980-2021/AAPL.csv")
 
 # mysql의 id, 비밀번호, host, port, database를 설정. pymysql 설치 필요
 engine = create_engine('mysql+pymysql://root:1234@127.0.0.1:3306/stock_info')
 
 # stock_prices라는 테이블 생성
-df.to_sql('stock_prices', con=engine, if_exists='replace', index=False)
+# df.to_sql('stock_prices', con=engine, if_exists='replace', index=False)
 
-# print("안녕하세요")
+query = 'SELECT * FROM stock_prices WHERE Date BETWEEN "2018-01-01" AND "2018-12-31"'
+df = pd.read_sql(query, con=engine)
+
+print(df.columns)
+
+fig = px.line(df, x= 'Date', y = 'Volume')
+
+fig.write_html('chart.html')
