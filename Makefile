@@ -1,5 +1,5 @@
 run:
-	python index.py
+	python app.py
 
 clean:
 	rm -rf __pycache__
